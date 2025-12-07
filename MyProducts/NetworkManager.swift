@@ -22,7 +22,7 @@ enum NetworkError : Error {
     }
 }
 
-protocol NetworkService {
+protocol NetworkService : Sendable {
     func fetchProducts() async throws -> [ProductModel]
 }
 
@@ -46,5 +46,11 @@ final class NetworkManager : NetworkService {
         } catch {
             throw NetworkError.networkError(error: error.localizedDescription)
         }
+    }
+}
+class MockNetworkManager : NetworkService {
+    func fetchProducts() async throws -> [ProductModel] {
+       try await Task.sleep(nanoseconds: 10_000_00)
+        return []
     }
 }

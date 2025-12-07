@@ -37,27 +37,6 @@ struct HomeView: View {
         
     }
 }
-struct HomeGridItem : View {
-    var product : ProductModel
-    var body: some View {
-        VStack(alignment: .leading,spacing: 10) {
-            AsyncImage(url: URL(string: product.image)) { image in
-                image
-                    .resizable()
-            } placeholder: {
-                ProgressView()
-            }
-            .frame(width: 100,height: 100)
-                
-                Text(product.title)
-                .lineLimit(2)
-                Text("$\(String(format: "%.2f", product.price))")
-                .fontWeight(.bold)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity,alignment: .leading)
-    }
-}
 
 #Preview {
     HomeView()

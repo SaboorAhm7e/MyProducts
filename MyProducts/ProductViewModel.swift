@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-@MainActor
+//@MainActor
 final class ProductViewModel : ObservableObject {
     @Published var products : [ProductModel] = []
     
