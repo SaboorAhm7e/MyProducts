@@ -15,3 +15,6 @@ struct ProductModel  : Codable,Identifiable {
     let category : String
     let image : String
 }
+extension ProductModel {
+    static let dummy = ProductModel(id: 1, title: "", price: 0, description: "", category: "", image: "")
+}
