@@ -22,6 +22,7 @@ struct HomeView: View {
                             HomeGridItem(product: product)
                                 .tint(.primary)
                         }
+                        .accessibilityIdentifier("navigation_link_tap")
                       
                     }
                 }

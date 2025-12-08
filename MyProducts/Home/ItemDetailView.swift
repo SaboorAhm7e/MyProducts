@@ -42,6 +42,7 @@ struct ItemDetailView: View {
             Spacer()
 
         }
+        .accessibilityIdentifier("item_detail_view")
         .overlay(alignment: .topTrailing, content: {
                 Text(item.category)
                 .font(.footnote)

@@ -17,11 +17,19 @@ struct PVMTest  {
         viewModel = ProductViewModel(service: MockNetworkManager())
     }
     
-    @Test("Test View Model") func isViewModelValid()  {
+    @Test("View Model->fetchAllProducts") func fetchAllProducts()  {
         viewModel?.fetchAllProducts()
         #expect(viewModel?.products.isEmpty == true,"product must be empty")
     }
-    
+    @Test("View Model->fetchProductDetail") func fetchDetail() async {
+        // arrange
+        let id = 1
+        // act
+        let product = await viewModel?.fetchDetail(id: id)
+        // expect
+        #expect(product == ProductModel.dummy,"fetch detail not equal")
+    }
+ 
     
 
 }

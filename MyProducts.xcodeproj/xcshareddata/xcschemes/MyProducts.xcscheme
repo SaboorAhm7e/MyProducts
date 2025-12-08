@@ -56,6 +56,12 @@
                   Identifier = "HomeUITest/testLaunchPerformance()">
                </Test>
                <Test
+                  Identifier = "ItemDetailUITest/testItemDetailUI()">
+               </Test>
+               <Test
+                  Identifier = "UITestLaunchTests">
+               </Test>
+               <Test
                   Identifier = "UITestLaunchTests/testLaunch()">
                </Test>
             </SkippedTests>
