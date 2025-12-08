@@ -24,12 +24,14 @@ enum NetworkError : Error {
 
 protocol NetworkService : Sendable {
     func fetchProducts() async throws -> [ProductModel]
+    func fetchProductDetail(id:Int) async throws -> ProductModel
 }
 
 final class NetworkManager : NetworkService {
     
     let endpoint = "https://fakestoreapi.com/products"
 
+    // MARK: - Fetch All Product
     func fetchProducts() async throws -> [ProductModel] {
         guard let url = URL(string: endpoint) else { throw NetworkError.invalidURL }
         do {
@@ -47,10 +49,38 @@ final class NetworkManager : NetworkService {
             throw NetworkError.networkError(error: error.localizedDescription)
         }
     }
+    // MARK: - Fetch Product Detail
+    func fetchProductDetail(id: Int) async throws -> ProductModel {
+        
+        guard let url = URL(string: endpoint+"\(id)") else {
+            throw NetworkError.invalidURL
+        }
+        do {
+            let (data,response) = try await URLSession.shared.data(from: url)
+            
+            guard let response = response as? HTTPURLResponse,(200...299).contains(response.statusCode) else {
+                throw NetworkError.serverError
+            }
+            return try JSONDecoder().decode(ProductModel.self, from: data)
+            
+        } catch let error as DecodingError {
+            throw NetworkError.networkError(error: error.localizedDescription)
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkError(error: error.localizedDescription)
+        }
+    }
 }
 class MockNetworkManager : NetworkService {
+   
+    
     func fetchProducts() async throws -> [ProductModel] {
        try await Task.sleep(nanoseconds: 10_000_00)
         return []
+    }
+    func fetchProductDetail(id: Int) async throws -> ProductModel {
+        try await Task.sleep(nanoseconds: 10_000_00)
+        return ProductModel.dummy
     }
 }

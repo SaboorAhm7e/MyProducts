@@ -25,8 +25,19 @@ final class ProductViewModel : ObservableObject {
             } catch let error as NetworkError {
                 print(error.message)
             } catch {
-                print("unknown error")
+                print("unknown error:\(error.localizedDescription)")
             }
         }
+    }
+    func fetchDetail(id:Int) async -> ProductModel {
+            do {
+                return try await  service.fetchProductDetail(id: id)
+            } catch let error as NetworkError {
+                print(error.message)
+                return ProductModel.dummy
+            } catch {
+                print("unknown error:\(error.localizedDescription)")
+                return ProductModel.dummy
+            }
     }
 }

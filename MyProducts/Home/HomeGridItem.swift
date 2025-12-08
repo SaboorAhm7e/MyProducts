@@ -15,6 +15,7 @@ struct HomeGridItem: View {
             AsyncImage(url: URL(string: product.image)) { image in
                 image
                     .resizable()
+                    .scaledToFit()
                     .accessibilityIdentifier("grid_image")
             } placeholder: {
                 ZStack {
@@ -28,11 +29,13 @@ struct HomeGridItem: View {
             
             Text(product.title)
                 .lineLimit(2)
+                .multilineTextAlignment(.leading)
                 .accessibilityIdentifier("grid_title")
+            
             
             Text("$\(String(format: "%.2f", product.price))")
                 .fontWeight(.bold)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.red)
                 .accessibilityIdentifier("grid_price")
         }
         .frame(maxWidth: .infinity, alignment: .leading)

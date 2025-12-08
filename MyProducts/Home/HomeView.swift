@@ -9,14 +9,21 @@ import SwiftUI
 
 
 struct HomeView: View {
+    
     @StateObject var viewModel : ProductViewModel = ProductViewModel(service: NetworkManager())
     var columns : [GridItem] = Array(repeating: GridItem(.flexible()), count: 2)
+    @State var path = NavigationPath()
     var body: some View {
-        NavigationStack{
+        NavigationStack(path: $path){
             ScrollView(.vertical,showsIndicators: false){
                 LazyVGrid(columns: columns) {
                     ForEach(viewModel.products) { product in
-                       HomeGridItem(product: product)
+                        NavigationLink(value: product.id) {
+                            HomeGridItem(product: product)
+                                .tint(.primary)
+                        }
+                        .accessibilityIdentifier("navigation_link_tap")
+                      
                     }
                 }
             }
@@ -32,6 +39,10 @@ struct HomeView: View {
                         //
                     }
                 }
+            }
+            .navigationDestination(for: Int.self) { id in
+                ItemDetailView(id: id)
+                    .environmentObject(viewModel)
             }
         }
         

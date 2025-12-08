@@ -7,11 +7,14 @@
 
 import Foundation
 
-struct ProductModel  : Codable,Identifiable {
+struct ProductModel  : Codable,Identifiable,Equatable {
     let id : Int
     let title : String
     let price : Double
     let description : String
     let category : String
     let image : String
+}
+extension ProductModel {
+    static let dummy = ProductModel(id: 1, title: "", price: 0, description: "", category: "", image: "")
 }
