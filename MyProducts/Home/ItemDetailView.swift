@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct ItemDetailView: View {
+    
     var id : Int = 1
     @State private var item : ProductModel = .dummy
+    @EnvironmentObject var viewModel : ProductViewModel
+    
     var body: some View {
         VStack {
             AsyncImage(url: URL(string: item.image)) { image in
@@ -59,37 +62,9 @@ struct ItemDetailView: View {
             }
         }
         .task {
-            do {
-                item = try await fetch(id: id)
-            } catch let error as NetworkError {
-                print(error.message)
-            } catch {
-                print(error.localizedDescription)
-            }
-            
+            item = await viewModel.fetchDetail(id: id)
         }
         
-    }
-    func fetch(id:Int) async throws -> ProductModel {
-        let endpoint = "https://fakestoreapi.com/products/\(id)"
-        guard let url = URL(string: endpoint) else {
-            throw NetworkError.invalidURL
-        }
-        do {
-            let (data,response) = try await URLSession.shared.data(from: url)
-            
-            guard let response = response as? HTTPURLResponse,(200...299).contains(response.statusCode) else {
-                throw NetworkError.serverError
-            }
-            return try JSONDecoder().decode(ProductModel.self, from: data)
-            
-        } catch let error as DecodingError {
-            throw NetworkError.networkError(error: error.localizedDescription)
-        } catch let error as NetworkError {
-            throw error
-        } catch {
-            throw NetworkError.networkError(error: error.localizedDescription)
-        }
     }
 }
 

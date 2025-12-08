@@ -41,6 +41,7 @@ struct HomeView: View {
             }
             .navigationDestination(for: Int.self) { id in
                 ItemDetailView(id: id)
+                    .environmentObject(viewModel)
             }
         }
         
