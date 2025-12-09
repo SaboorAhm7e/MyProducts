@@ -59,6 +59,9 @@
                   Identifier = "ItemDetailUITest/testItemDetailUI()">
                </Test>
                <Test
+                  Identifier = "ItemDetailUITest/testLaunchPerformance()">
+               </Test>
+               <Test
                   Identifier = "UITestLaunchTests">
                </Test>
                <Test
