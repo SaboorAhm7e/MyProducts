@@ -27,22 +27,25 @@ struct ItemDetailView: View {
                 }
             }
             .frame(width:200,height: 200)
+            .accessibilityIdentifier("item_detail_image")
             VStack(alignment:.leading){
                 Text(item.title)
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .accessibilityIdentifier("item_detail_title")
                 Text("$\(String(format: "%.2f", item.price))")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundStyle(.red)
+                    .accessibilityIdentifier("item_detail_price")
                 Text(item.description)
+                    .accessibilityIdentifier("item_detail_desc")
             }
            
             
             Spacer()
 
         }
-        .accessibilityIdentifier("item_detail_view")
         .overlay(alignment: .topTrailing, content: {
                 Text(item.category)
                 .font(.footnote)

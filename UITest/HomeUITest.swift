@@ -27,7 +27,6 @@ final class HomeUITest: XCTestCase {
         app.launch()
         let element = app.scrollViews/*@START_MENU_TOKEN@*/.firstMatch/*[[".containing(.other, identifier: nil).firstMatch",".firstMatch"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
         element.swipeUp()
-        element.swipeUp()
         
     }
 
