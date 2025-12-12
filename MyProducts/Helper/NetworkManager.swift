@@ -25,6 +25,7 @@ enum NetworkError : Error {
 protocol NetworkService : Sendable {
     func fetchProducts() async throws -> [ProductModel]
     func fetchProductDetail(id:Int) async throws -> ProductModel
+    func deleteProduct(id:Int) async throws -> Bool
 }
 
 final class NetworkManager : NetworkService {
@@ -52,7 +53,7 @@ final class NetworkManager : NetworkService {
     // MARK: - Fetch Product Detail
     func fetchProductDetail(id: Int) async throws -> ProductModel {
         
-        guard let url = URL(string: endpoint+"\(id)") else {
+        guard let url = URL(string: endpoint+"/\(id)") else {
             throw NetworkError.invalidURL
         }
         do {
@@ -71,6 +72,32 @@ final class NetworkManager : NetworkService {
             throw NetworkError.networkError(error: error.localizedDescription)
         }
     }
+    
+    func deleteProduct(id: Int) async throws -> Bool {
+        guard let url = URL(string: endpoint+"/\(id)") else {
+            throw NetworkError.invalidURL
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            let (_,response) = try await URLSession.shared.data(for: request)
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                throw NetworkError.serverError
+            }
+            return true
+            
+        } catch let error as DecodingError {
+            throw NetworkError.networkError(error: error.localizedDescription)
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkError(error: error.localizedDescription)
+        }
+        
+    }
+    
 }
 class MockNetworkManager : NetworkService {
    
@@ -82,5 +109,9 @@ class MockNetworkManager : NetworkService {
     func fetchProductDetail(id: Int) async throws -> ProductModel {
         try await Task.sleep(nanoseconds: 10_000_00)
         return ProductModel.dummy
+    }
+    func deleteProduct(id: Int) async throws -> Bool {
+        try await Task.sleep(nanoseconds: 10_000_00)
+        return true
     }
 }

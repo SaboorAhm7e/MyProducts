@@ -14,6 +14,7 @@ struct HomeView: View {
     var columns : [GridItem] = Array(repeating: GridItem(.flexible()), count: 2)
     @State var path = NavigationPath()
     @State var finalDataSet : [ProductModel] = []
+    @State var showAlert : Bool = false
     var body: some View {
         NavigationStack(path: $path){
             ScrollView(.vertical,showsIndicators: false){
@@ -22,14 +23,32 @@ struct HomeView: View {
                         NavigationLink(value: product.id) {
                             HomeGridItem(product: product)
                                 .tint(.primary)
+                                .contextMenu {
+                                    Button("Delete", systemImage: "trash"){
+                                        Task {
+                                            await viewModel.deleteProduct(id: product.id)
+                                        }
+                                    }
+                                    .tint(.red)
+                                    Button("Add to Cart", systemImage: "cart"){
+                                        print("cart")
+                                    }
+                                    .tint(.blue)
+                                    
+                                }
                         }
                         .accessibilityIdentifier("navigation_link_tap")
-                      
+                        
                     }
                 }
                 .padding(.horizontal)
                 
             }
+            .onChange(of: viewModel.errorMessage, { _, new in
+                if !new.isEmpty {
+                    showAlert.toggle()
+                }
+            })
             .navigationTitle("Products")
             .navigationBarTitleDisplayMode(.automatic)
             .onAppear {
@@ -62,6 +81,9 @@ struct HomeView: View {
             .navigationDestination(for: Int.self) { id in
                 ItemDetailView(id: id)
                     .environmentObject(viewModel)
+            }
+            .alert(viewModel.errorMessage, isPresented: $showAlert) {
+                Button("OK",role:.cancel){}
             }
         }
         

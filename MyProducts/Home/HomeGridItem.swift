@@ -38,6 +38,7 @@ struct HomeGridItem: View {
                 .foregroundStyle(.red)
                 .accessibilityIdentifier("grid_price")
         }
+        .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityIdentifier("home_grid_item")
     }

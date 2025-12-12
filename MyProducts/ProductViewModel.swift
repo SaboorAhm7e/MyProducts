@@ -11,6 +11,7 @@ import Combine
 //@MainActor
 final class ProductViewModel : ObservableObject {
     @Published var products : [ProductModel] = []
+    @Published var errorMessage : String = ""
     
     private let service : NetworkService
     
@@ -23,9 +24,9 @@ final class ProductViewModel : ObservableObject {
             do {
                 products = try await service.fetchProducts()
             } catch let error as NetworkError {
-                print(error.message)
+                errorMessage = error.message
             } catch {
-                print("unknown error:\(error.localizedDescription)")
+                errorMessage = "unknown error:\(error.localizedDescription)"
             }
         }
     }
@@ -33,11 +34,21 @@ final class ProductViewModel : ObservableObject {
             do {
                 return try await  service.fetchProductDetail(id: id)
             } catch let error as NetworkError {
-                print(error.message)
+                errorMessage = error.message
                 return ProductModel.dummy
             } catch {
-                print("unknown error:\(error.localizedDescription)")
+                errorMessage = "unknown error:\(error.localizedDescription)"
                 return ProductModel.dummy
             }
+    }
+    func deleteProduct(id:Int) async  {
+        do {
+            let _ = try await service.deleteProduct(id: id)
+            errorMessage = "Successfuly delete product"
+        } catch let error as NetworkError {
+            errorMessage = error.message
+        } catch {
+            errorMessage = "unknown error:\(error.localizedDescription)"
+        }
     }
 }
