@@ -29,6 +29,15 @@ struct PVMTest  {
         // expect
         #expect(product == ProductModel.dummy,"fetch detail not equal")
     }
+    @Test("View Model->deleteProduct") func deleteProduct() async{
+        // arragne
+        let id = 1
+        // act
+        await viewModel?.deleteProduct(id: id)
+        let message = await viewModel?.errorMessage
+        // expect
+        #expect(message == "Successfuly delete product")
+    }
  
     
 

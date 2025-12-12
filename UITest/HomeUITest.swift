@@ -29,11 +29,4 @@ final class HomeUITest: XCTestCase {
         element.swipeUp()
         
     }
-
-    func testLaunchPerformance() throws {
-        // This measures how long it takes to launch your application.
-        measure(metrics: [XCTApplicationLaunchMetric()]) {
-            XCUIApplication().launch()
-        }
-    }
 }

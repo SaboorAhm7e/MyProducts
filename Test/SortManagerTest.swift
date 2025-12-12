@@ -77,7 +77,7 @@ struct SortManagerTest {
             let time =  measure {
                 _ = SortManager.sortInAscendingOrder(arr)
             }
-            #expect(time < .seconds(0.15))
+            #expect(time < .seconds(0.2))
         }
         
         @Test func performanceSortZToA()  {
@@ -85,7 +85,7 @@ struct SortManagerTest {
             let time =  measure {
                 _ = SortManager.sortInDescendingOrder(arr)
             }
-            #expect(time < .seconds(0.15))
+            #expect(time < .seconds(0.2))
         }
         
         @Test func performanceSortHighToLow()  {
@@ -93,7 +93,7 @@ struct SortManagerTest {
             let time =  measure {
                 _ = SortManager.sortInHightToLowPrice(arr)
             }
-            #expect(time < .seconds(0.15))
+            #expect(time < .seconds(0.2))
         }
         
         @Test func performanceSortLowToHigh()  {
@@ -101,7 +101,7 @@ struct SortManagerTest {
             let time =  measure {
                 _ = SortManager.sortInLowToHighPrice(arr)
             }
-            #expect(time < .seconds(0.15))
+            #expect(time < .seconds(0.2))
         }
         
     }

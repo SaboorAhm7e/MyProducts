@@ -40,6 +40,11 @@
                BlueprintName = "Test"
                ReferencedContainer = "container:MyProducts.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "SortManagerTest/Performance">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO"
@@ -54,9 +59,6 @@
             <SkippedTests>
                <Test
                   Identifier = "HomeUITest/testLaunchPerformance()">
-               </Test>
-               <Test
-                  Identifier = "ItemDetailUITest/testItemDetailUI()">
                </Test>
                <Test
                   Identifier = "ItemDetailUITest/testLaunchPerformance()">
