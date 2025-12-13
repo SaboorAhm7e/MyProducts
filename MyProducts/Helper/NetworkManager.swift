@@ -26,6 +26,7 @@ protocol NetworkService : Sendable {
     func fetchProducts() async throws -> [ProductModel]
     func fetchProductDetail(id:Int) async throws -> ProductModel
     func deleteProduct(id:Int) async throws -> Bool
+    func addProduct(product:ProductModel) async throws -> Bool
 }
 
 final class NetworkManager : NetworkService {
@@ -72,7 +73,7 @@ final class NetworkManager : NetworkService {
             throw NetworkError.networkError(error: error.localizedDescription)
         }
     }
-    
+    // MARK: - Delete
     func deleteProduct(id: Int) async throws -> Bool {
         guard let url = URL(string: endpoint+"/\(id)") else {
             throw NetworkError.invalidURL
@@ -97,6 +98,34 @@ final class NetworkManager : NetworkService {
         }
         
     }
+    // MARK: - Add
+    func addProduct(product: ProductModel) async throws -> Bool {
+        guard let url = URL(string: endpoint) else {
+            throw NetworkError.invalidURL
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let encoded = try JSONEncoder().encode(product)
+            request.httpBody = encoded
+            
+            let (_,response) = try await URLSession.shared.data(for: request)
+            
+            guard let respose = response as? HTTPURLResponse, (200...299).contains(respose.statusCode) else {
+                throw NetworkError.serverError
+            }
+            return true
+            
+        } catch let error as DecodingError {
+            throw NetworkError.networkError(error: error.localizedDescription)
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.networkError(error: error.localizedDescription)
+        }
+    }
     
 }
 class MockNetworkManager : NetworkService {
@@ -111,6 +140,10 @@ class MockNetworkManager : NetworkService {
         return ProductModel.dummy
     }
     func deleteProduct(id: Int) async throws -> Bool {
+        try await Task.sleep(nanoseconds: 10_000_00)
+        return true
+    }
+    func addProduct(product: ProductModel) async throws -> Bool {
         try await Task.sleep(nanoseconds: 10_000_00)
         return true
     }

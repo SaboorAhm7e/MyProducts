@@ -51,4 +51,14 @@ final class ProductViewModel : ObservableObject {
             errorMessage = "unknown error:\(error.localizedDescription)"
         }
     }
+    func addProduct(product:ProductModel) async {
+            do {
+                let _ = try await service.addProduct(product: product)
+                errorMessage = "Successfuly add product"
+            } catch let error as NetworkError {
+                errorMessage = error.message
+            } catch {
+                errorMessage = "unknown error: \(error.localizedDescription)"
+            }
+    }
 }

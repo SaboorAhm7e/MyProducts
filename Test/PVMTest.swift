@@ -38,6 +38,16 @@ struct PVMTest  {
         // expect
         #expect(message == "Successfuly delete product")
     }
+    @Test("View Model -> addProduct")
+    func addProduct() async throws {
+        // arrange
+        let product : ProductModel = ProductModel(id: 1, title: "", price: 0, description: "", category: "", image: "")
+        // act
+        await viewModel?.addProduct(product: product)
+        let message = await viewModel?.errorMessage
+        // expect
+        #expect(message == "Successfuly add product")
+    }
  
     
 
