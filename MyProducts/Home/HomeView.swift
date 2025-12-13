@@ -7,20 +7,25 @@
 
 import SwiftUI
 
+enum NavigationRute : Hashable {
+    case detail(id: Int)
+    case add
+}
 
 struct HomeView: View {
-    
+    // MARK: - properties
     @StateObject var viewModel : ProductViewModel = ProductViewModel(service: NetworkManager())
     var columns : [GridItem] = Array(repeating: GridItem(.flexible()), count: 2)
     @State var path = NavigationPath()
     @State var finalDataSet : [ProductModel] = []
     @State var showAlert : Bool = false
+    // MARK: - body
     var body: some View {
         NavigationStack(path: $path){
             ScrollView(.vertical,showsIndicators: false){
                 LazyVGrid(columns: columns) {
                     ForEach(finalDataSet) { product in
-                        NavigationLink(value: product.id) {
+                        NavigationLink(value: NavigationRute.detail(id: product.id)) {
                             HomeGridItem(product: product)
                                 .tint(.primary)
                                 .contextMenu {
@@ -60,6 +65,9 @@ struct HomeView: View {
             .toolbar {
 
                 ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button("", systemImage: "plus") {
+                        path.append(NavigationRute.add)
+                    }
                     Menu("", systemImage: "arrow.up.arrow.down") {
                         Text("Sort")
                         Divider()
@@ -82,6 +90,16 @@ struct HomeView: View {
                 ItemDetailView(id: id)
                     .environmentObject(viewModel)
             }
+            .navigationDestination(for: NavigationRute.self, destination: { rute in
+                switch rute {
+                case .detail(let id):
+                    ItemDetailView(id:id)
+                        .environmentObject(viewModel)
+                case .add:
+                    AddProductView()
+                        .environmentObject(viewModel)
+                }
+            })
             .alert(viewModel.errorMessage, isPresented: $showAlert) {
                 Button("OK",role:.cancel){}
             }
