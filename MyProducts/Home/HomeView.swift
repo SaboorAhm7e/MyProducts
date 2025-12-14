@@ -19,6 +19,7 @@ struct HomeView: View {
     @State var path = NavigationPath()
     @State var finalDataSet : [ProductModel] = []
     @State var showAlert : Bool = false
+    @State var searchText = ""
     // MARK: - body
     var body: some View {
         NavigationStack(path: $path){
@@ -62,6 +63,13 @@ struct HomeView: View {
             .onChange(of: viewModel.products) { _, _ in
                 finalDataSet = viewModel.products
             }
+            .searchable(text: $searchText)
+            .onChange(of: searchText, { oldValue, newValue in
+                withAnimation(.easeInOut) {
+                    searchData(newValue)
+                }
+                
+            })
             .toolbar {
 
                 ToolbarItemGroup(placement: .topBarTrailing) {
@@ -103,6 +111,16 @@ struct HomeView: View {
             .alert(viewModel.errorMessage, isPresented: $showAlert) {
                 Button("OK",role:.cancel){}
             }
+        }
+        
+    }
+    
+    func searchData(_ searchText: String) {
+        
+        if !searchText.isEmpty {
+            finalDataSet = viewModel.products.filter {$0.title.lowercased().contains(searchText.lowercased())}
+        } else {
+            finalDataSet = viewModel.products
         }
         
     }

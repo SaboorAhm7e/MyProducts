@@ -21,8 +21,8 @@ struct AddProductView: View {
     ]
     @State var selectedCategory : String = "None"
     @EnvironmentObject var viewModel : ProductViewModel
-    @State var showAlert : Bool = false
     @Environment(\.dismiss) var dismiss
+    
     // MARK: - body
     var body: some View {
         Form {
@@ -44,16 +44,11 @@ struct AddProductView: View {
                 Button("", systemImage: "checkmark") {
                     Task {
                         await addProduct()
+                        dismiss()
                     }
                 }
                 .accessibilityIdentifier("btn_confirm")
             }
-        }
-        .onChange(of: viewModel.errorMessage, { _, _ in
-            showAlert.toggle()
-        })
-        .alert(viewModel.errorMessage, isPresented: $showAlert) {
-            Button("OK", role: .cancel) { dismiss() }
         }
         
     }
