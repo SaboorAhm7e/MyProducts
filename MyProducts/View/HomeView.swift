@@ -15,7 +15,13 @@ enum NavigationRute : Hashable {
 struct HomeView: View {
     // MARK: - properties
     @StateObject var viewModel : ProductViewModel = ProductViewModel(service: NetworkManager())
-    var columns : [GridItem] = Array(repeating: GridItem(.flexible()), count: 2)
+    @Environment(\.horizontalSizeClass) var hsizeclass
+    var isIpad : Bool {
+        hsizeclass == .regular
+    }
+    var columns : [GridItem] {
+        Array(repeating: GridItem(.flexible()), count: isIpad ? 3 : 2)
+    }
     @State var path = NavigationPath()
     @State var finalDataSet : [ProductModel] = []
     @State var showAlert : Bool = false
