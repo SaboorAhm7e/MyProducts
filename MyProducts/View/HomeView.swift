@@ -14,7 +14,7 @@ enum NavigationRute : Hashable {
 
 struct HomeView: View {
     // MARK: - properties
-    @StateObject var viewModel : ProductViewModel = ProductViewModel(service: NetworkManager())
+    @EnvironmentObject var viewModel : ProductViewModel
     @Environment(\.horizontalSizeClass) var hsizeclass
     var isIpad : Bool {
         hsizeclass == .regular
@@ -23,9 +23,12 @@ struct HomeView: View {
         Array(repeating: GridItem(.flexible()), count: isIpad ? 3 : 2)
     }
     @State var path = NavigationPath()
-    @State var finalDataSet : [ProductModel] = []
-    @State var showAlert : Bool = false
+    var finalDataSet : [ProductModel] {
+        if searchText.isEmpty { return viewModel.products}
+        return viewModel.products.filter{$0.title.localizedCaseInsensitiveContains(searchText)}
+    }
     @State var searchText = ""
+    @Binding var selectedTab: TabCase
     // MARK: - body
     var body: some View {
         NavigationStack(path: $path){
@@ -56,53 +59,17 @@ struct HomeView: View {
                 .padding(.horizontal)
                 
             }
-            .onChange(of: viewModel.errorMessage, { _, new in
-                if !new.isEmpty {
-                    showAlert.toggle()
-                }
-            })
             .navigationTitle("Products")
             .navigationBarTitleDisplayMode(.automatic)
-            .onAppear {
-                viewModel.fetchAllProducts()
-            }
-            .onChange(of: viewModel.products) { _, _ in
-                finalDataSet = viewModel.products
-            }
-            .searchable(text: $searchText)
-            .onChange(of: searchText, { oldValue, newValue in
-                withAnimation(.easeInOut) {
-                    searchData(newValue)
-                }
-                
-            })
+            .searching(tabCase: $selectedTab, txt: $searchText)
             .toolbar {
 
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button("", systemImage: "plus") {
                         path.append(NavigationRute.add)
                     }
-                    Menu("", systemImage: "arrow.up.arrow.down") {
-                        Text("Sort")
-                        Divider()
-                        Button("A-Z"){
-                            finalDataSet = SortManager.sortInAscendingOrder(viewModel.products)
-                        }
-                        Button("Z-A"){
-                            finalDataSet = SortManager.sortInDescendingOrder(viewModel.products)
-                        }
-                        Button("Price: High-Low"){
-                            finalDataSet = SortManager.sortInHightToLowPrice(viewModel.products)
-                        }
-                        Button("Price: Low-High") {
-                            finalDataSet = SortManager.sortInLowToHighPrice(viewModel.products)
-                        }
-                    }
+                    toolBarMenu()
                 }
-            }
-            .navigationDestination(for: Int.self) { id in
-                ItemDetailView(id: id)
-                    .environmentObject(viewModel)
             }
             .navigationDestination(for: NavigationRute.self, destination: { rute in
                 switch rute {
@@ -114,25 +81,41 @@ struct HomeView: View {
                         .environmentObject(viewModel)
                 }
             })
-            .alert(viewModel.errorMessage, isPresented: $showAlert) {
-                Button("OK",role:.cancel){}
-            }
         }
         
     }
-    
-    func searchData(_ searchText: String) {
-        
-        if !searchText.isEmpty {
-            finalDataSet = viewModel.products.filter {$0.title.lowercased().contains(searchText.lowercased())}
-        } else {
-            finalDataSet = viewModel.products
+    // MARK: - Subviews
+    @ViewBuilder
+    private func  toolBarMenu() -> some View {
+        Menu("", systemImage: "arrow.up.arrow.down") {
+            Text("Sort")
+            Divider()
+            Button("Order: A-Z"){
+                withAnimation(.easeInOut) {
+                    viewModel.products = SortManager.sortInAscendingOrder(viewModel.products)
+                }
+                
+            }
+            Button("Order: Z-A"){
+                withAnimation(.easeInOut) {
+                    viewModel.products = SortManager.sortInDescendingOrder(viewModel.products)
+                }
+            }
+            Button("Price: High-Low"){
+                withAnimation(.easeInOut) {
+                    viewModel.products = SortManager.sortInHightToLowPrice(viewModel.products)
+                }
+            }
+            Button("Price: Low-High") {
+                withAnimation(.easeInOut) {
+                    viewModel.products = SortManager.sortInLowToHighPrice(viewModel.products)
+                }
+            }
         }
-        
     }
 
 }
 
 #Preview {
-    HomeView()
+    HomeView(selectedTab: .constant(TabCase.home))
 }

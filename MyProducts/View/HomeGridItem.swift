@@ -12,20 +12,12 @@ struct HomeGridItem: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            AsyncImage(url: URL(string: product.image)) { image in
-                image
-                    .resizable()
+            if let url = URL(string: product.image) {
+                CachedImageView(url: url)
                     .scaledToFit()
+                    .frame(width: 100, height: 100)
                     .accessibilityIdentifier("grid_image")
-            } placeholder: {
-                ZStack {
-                    ProgressView()
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.separator)
-                }
-                .accessibilityIdentifier("grid_image_placeholder")
             }
-            .frame(width: 100, height: 100)
             
             Text(product.title)
                 .lineLimit(2)

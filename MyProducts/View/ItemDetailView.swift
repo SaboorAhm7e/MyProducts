@@ -15,19 +15,12 @@ struct ItemDetailView: View {
     
     var body: some View {
         VStack {
-            AsyncImage(url: URL(string: item.image)) { image in
-                image
-                    .resizable()
+            if let url = URL(string: item.image) {
+                CachedImageView(url: url)
                     .scaledToFit()
-            } placeholder: {
-                ZStack {
-                    ProgressView()
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.separator)
-                }
+                    .frame(width: 200, height: 200)
+                    .accessibilityIdentifier("item_detail_image")
             }
-            .frame(width:200,height: 200)
-            .accessibilityIdentifier("item_detail_image")
             VStack(alignment:.leading){
                 Text(item.title)
                     .font(.title3)
