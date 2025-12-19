@@ -31,7 +31,7 @@ struct ItemDetailView: View {
                     .fontWeight(.bold)
                     .foregroundStyle(.red)
                     .accessibilityIdentifier("item_detail_price")
-                Text(item.description)
+                Text(item.desc)
                     .accessibilityIdentifier("item_detail_desc")
             }
            

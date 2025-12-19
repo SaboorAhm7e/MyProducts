@@ -37,5 +37,5 @@ struct HomeGridItem: View {
 }
 
 #Preview {
-    HomeGridItem(product: ProductModel(id: 1, title: "Product Name", price: 0, description: "abc", category:"a", image: ""))
+    HomeGridItem(product: ProductModel(id: 1, title: "Product Name", price: 0, desc: "abc", category:"a", image: ""))
 }
