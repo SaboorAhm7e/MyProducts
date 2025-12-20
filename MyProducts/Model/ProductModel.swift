@@ -12,22 +12,28 @@ struct ProductModel  : Codable,Identifiable,Equatable {
     let id : Int
     let title : String
     let price : Double
-    let desc : String
+    let description : String
     let category : String
     let image : String
 }
 extension ProductModel {
-    static let dummy = ProductModel(id: 1, title: "", price: 0, desc: "", category: "", image: "")
+    static let dummy = ProductModel(id: 1, title: "title", price: 0, description: "description", category: "none", image: "")
 }
 
 @Model
 class ProductPersistantModel {
-    var id : Int
+    @Attribute(.unique) var id : Int
     var title : String
     var price : Double
     var desc : String
     var category : String
     var image : String
+    
+    var quantity : Int = 1
+    
+   @Transient var calculatedPrice : String {
+        return String(Int(price) * quantity)
+    }
     
     init(id: Int, title: String, price: Double, desc: String, category: String, image: String) {
         self.id = id

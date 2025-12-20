@@ -61,7 +61,7 @@ struct AddProductView: View {
         guard !description.isEmpty else { return }
         guard selectedCategory != "None" else { return}
         
-        let productModel : ProductModel = .init(id: id, title: title, price: doubleprice, desc: description, category: selectedCategory, image: imageUrl)
+        let productModel : ProductModel = .init(id: id, title: title, price: doubleprice, description: description, category: selectedCategory, image: imageUrl)
         
         await viewModel.addProduct(product: productModel)
     }

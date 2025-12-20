@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 enum TabCase : Hashable {
     case home
@@ -17,6 +18,7 @@ struct MainTabView: View {
     @State var currentTab : TabCase = .home
     @StateObject var viewModel : ProductViewModel = ProductViewModel(service: NetworkManager())
     @State var showAlert : Bool = false
+    @Query var products : [ProductPersistantModel]
     var body: some View {
         TabView(selection:$currentTab) {
             Tab("Home", systemImage: "house",value: .home) {
@@ -24,8 +26,10 @@ struct MainTabView: View {
                     .environmentObject(viewModel)
             }
             Tab("Cart", systemImage: "cart",value: .cart) {
-                Text("Cart")
+                CartView()
+                    
             }
+            .badge(products.count)
             Tab(value:.search,role:.search) {
                 HomeView(selectedTab:$currentTab)
                     .environmentObject(viewModel)

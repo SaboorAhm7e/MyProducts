@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 enum NavigationRute : Hashable {
     case detail(id: Int)
@@ -29,6 +30,8 @@ struct HomeView: View {
     }
     @State var searchText = ""
     @Binding var selectedTab: TabCase
+    @Environment(\.modelContext) var context
+    @State var showDataAlert : Bool = false
     // MARK: - body
     var body: some View {
         NavigationStack(path: $path){
@@ -46,7 +49,7 @@ struct HomeView: View {
                                     }
                                     .tint(.red)
                                     Button("Add to Cart", systemImage: "cart"){
-                                        print("cart")
+                                        addToCart(product: product)
                                     }
                                     .tint(.blue)
                                     
@@ -58,6 +61,9 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 
+            }
+            .alert("Successfuly added to cart", isPresented: $showDataAlert) {
+                Button("OK", role: .cancel) { }
             }
             .navigationTitle("Products")
             .navigationBarTitleDisplayMode(.automatic)
@@ -81,6 +87,7 @@ struct HomeView: View {
                         .environmentObject(viewModel)
                 }
             })
+
         }
         
     }
@@ -112,6 +119,14 @@ struct HomeView: View {
                 }
             }
         }
+    }
+    // MARK: - methods
+    func addToCart(product:ProductModel) {
+        
+        let model = ProductPersistantModel(id: product.id, title: product.title, price: product.price, desc: product.description, category: product.category, image: product.image)
+        context.insert(model)
+        showDataAlert.toggle()
+        
     }
 
 }
